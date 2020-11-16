@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SadWeather</title>
+    <link rel = "Stylesheet" href = "./main.css">
+</head>
+<body>
+
+<div class="screen"></div>  
+  <div class="controlsBase">
+    <button class="controlsBackgroundBtn">
+      <img>
+    </button>
+    <select  class="selectLang">
+      <option value="en">EN</option>
+      <option value="ru">RU</option>
+    </select>
+    <select  class="selectMetr">
+      <option value="c">C</option>
+      <option value="f">F</option>
+    </select>        
+    <form autocomplete="off" class="controlsSearch">
+      <input  class="controlsSearchInp" type="text" >
+      <input  class="controlsSearchBtn"  type="submit" value="Search">
+    </form>
+  <div>
+    <div id="weatherNow">
+      <span class="cityName"></span>
+      <span class="countryName"></span>
+      <span class="dateNow"></span>
+     <span class="tempNow"></span>
+      <img class="weatherNowIcon">
+      <span class="condition"></span>
+      <span class="feelsLike"></span>
+      <span class="wingSpeed"></span>
+      <span class="humidity"></span>
+    </div>
+    <div id="weatherFor3Days">
+      <div class="nextDay">
+        <span class="nextWeekDay"></span>
+        <img class="nextDayIcon">
+        <span class="nextDayTemp"></span>  
+      </div>
+      <div class="secondDay">
+        <span class="secondWeekDay"></span>
+        <img class="secondDayIcon">
+        <span class="secondDayTemp"></span>
+      </div>
+      <div class="thirdDay">
+        <span class="thirdWeekDay"></span>
+        <img class="thirdDayIcon">
+        <span class="thirdDayTemp"></span>
+      </div>
+    </div>
+ 
+<script src="./index.js"></script>
+<script src="./src/index.js"></script></body>
+</html>

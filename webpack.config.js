@@ -6,7 +6,7 @@ module.exports = {
   entry: ['babel-polyfill', './src/index.js'],
   output: {
     path: path.resolve(__dirname, 'dist'),
-    filename: 'index.js'
+    filename: './src/index.js'
   },
   module: {
     rules: [
@@ -20,6 +20,14 @@ module.exports = {
       {
         test: /\.css$/,
         use: ['style-loader', 'css-loader']
+      },
+      {
+      test: /\.(png|jpe?g|gif)$/,
+        use: [
+          {
+            loader: 'file-loader',
+          }
+        ]
       }
     ]
   },
@@ -29,7 +37,7 @@ module.exports = {
     }),
     new HtmlWebpackPlugin({
       inject: true,
-      template: './index.html',
+      template: './src/index.html',
       filename: 'index.html'
     }),
     new ESLintPlugin({
