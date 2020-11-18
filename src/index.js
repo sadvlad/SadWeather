@@ -1,3 +1,5 @@
+import './main.css';
+
 const rusWeekDays = ['Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота', 'Воскресенье'];
 const engWeekDays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 const rusText = ['Поиск', 'ощущается как', 'скорость ветра', 'км/ч', 'влажность'];
@@ -15,7 +17,7 @@ if (lang === 'ru') {
 if (metr === 'f') {
   selectMetr.selectedIndex = 1;
 } else if (metr === 'c') {
-  selectLang.selectedIndex = 0;
+  selectMetr.selectedIndex = 0;
 }
 selectLang.addEventListener('change', () => {
   localStorage.setItem('lang', `${selectLang.value}`);
@@ -51,17 +53,32 @@ function getDate(langUse) {
   return date.toLocaleString(langUse, options, lang);
 }
 
+async function getAndChangeFon() {
+  const urlFon = 'https://source.unsplash.com/featured/?grey,black';
+  const fonResponce = await fetch(urlFon);
+  const fonData = fonResponce.url;
+  const bodyFon = document.querySelector('body');
+  bodyFon.style.backgroundImage = `url(${fonData})`;
+}
+getAndChangeFon();
+
+const controlsBackgroundBtn = document.querySelector('.controlsBackgroundBtn');
+controlsBackgroundBtn.addEventListener('click', () => {
+  getAndChangeFon();
+});
+
 async function getApis(text, WeekDays) {
   const urlLoc = 'https://ipinfo.io/json?token=eb5b90bb77d46a';
   const apiKey = 'dbdff77127fc4281abb81651200911';
   const locResponce = await fetch(urlLoc);
   const locData = await locResponce.json();
-  const searhOptions = await locData.loc;
+  let searhOptions = await locData.loc;
   const urlWeather = `https://api.weatherapi.com/v1/forecast.json?key=${apiKey}&q=${searhOptions}&days=3&lang=${lang}`;
   const weatherResponce = await fetch(urlWeather);
   const weatherData = await weatherResponce.json();
 
-  const isDay = weatherData.current.is_day;
+  const isDay = (new Date()).getDay();
+
   const cityName = document.querySelector('.cityName');
   const countryName = document.querySelector('.countryName');
   const dateNow = document.querySelector('.dateNow');
@@ -109,13 +126,13 @@ async function getApis(text, WeekDays) {
     secondDayTemp.innerHTML = `${weatherData.forecast.forecastday[1].day.avgtemp_f}&deg F`;
     thirdDayTemp.innerHTML = `${weatherData.forecast.forecastday[2].day.avgtemp_f}&deg F`;
   }
-  nextWeekDay.innerHTML = WeekDays[(isDay + 1)];
+  nextWeekDay.innerHTML = WeekDays[(isDay)];
   nextDayIcon.src = `./icons/${weatherData.forecast.forecastday[0].day.condition.icon.slice(34)}`;
 
-  secondWeekDay.innerHTML = WeekDays[(isDay + 2)];
+  secondWeekDay.innerHTML = WeekDays[(isDay + 1)];
   secondDayIcon.src = `./icons/${weatherData.forecast.forecastday[1].day.condition.icon.slice(34)}`;
 
-  thirdWeekDay.innerHTML = WeekDays[(isDay + 3)];
+  thirdWeekDay.innerHTML = WeekDays[(isDay + 2)];
   thirdDayIcon.src = `./icons/${weatherData.forecast.forecastday[2].day.condition.icon.slice(34)}`;
 }
 if (lang === 'ru') {

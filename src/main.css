@@ -1,0 +1,47 @@
+body { 
+  background-blend-mode: darken;
+  font-style: bolder;  
+  background-repeat: no-repeat; 
+  background-size: 100%;
+  
+}
+.weatherNow {
+  display: flex;
+  color: crimson;
+  font-size: 28px;
+  filter: contrast(150%)
+}
+
+.cityName {
+  font-size: 45px;
+}
+.countryName {
+  font-size: 30px;
+}
+.tempNow {
+  font-size: 70px;
+}
+.dateNow {
+ 
+  width: 13vw;  
+  height: auto;
+  margin-right: 5vw;  
+}
+.weatherNowBlock {
+    width: 250px;
+}
+.weatherFor3Days {
+  color: crimson;
+  font-size: 18px;
+  display: flex;
+  margin: 20px;
+  align-items: center;
+  filter: contrast(150%)
+}
+.nextDay, .secondDay, .thirdDay {
+  margin: 20px;
+}
+
+.container{
+  margin: 30px;
+}
