@@ -1,4 +1,4 @@
-import './main.css';
+import CSS from './main.css';
 
 const rusWeekDays = ['Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота', 'Воскресенье'];
 const engWeekDays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
@@ -24,8 +24,10 @@ selectLang.addEventListener('change', () => {
   lang = selectLang.value;
   if (selectLang.value === 'ru') {
     getApis(rusText, rusWeekDays);
+    getMap(getCoord(), lang);
   } else if (selectLang.value === 'en') {
     getApis(engText, engWeekDays);
+    getMap(getCoord(), lang);
   }
 }, false);
 
@@ -140,3 +142,51 @@ if (lang === 'ru') {
 } else {
   getApis(engText, engWeekDays, 'en');
 }
+
+async function getCoord() {
+  const city = 'Vitebsk';
+  const keyGeo = 'c6b6da0f80f24b299e08ee1075f81aa5';
+  const urlGeo = `https://api.opencagedata.com/geocode/v1/json?q=${city}&key=${keyGeo}&pretty=1&limit=1`;
+  const geoResponce = await fetch(urlGeo);
+  const geoData = await geoResponce.json();
+  let lat = geoData.results[0].geometry.lat;
+  let lng = geoData.results[0].geometry.lng;
+  const center = [+lng, +lat];
+  return center;
+}
+async function getMap(coord, language) {
+  mapboxgl.accessToken = 'pk.eyJ1Ijoic2FkdmxhZCIsImEiOiJja2hhYTFxdjIxY2FvMndvNW4zdmo3cXR1In0.lqCv6pdC6P-RQ_JN6Ssf0w';
+  const map = new mapboxgl.Map({
+    container: 'map', // container id
+    style: 'mapbox://styles/sadvlad/ckhn1yfwf0g0119qj4boks8hg', // style URL
+    center: await coord, // starting position [lng, lat]
+    zoom: 7 // starting zoom
+  });
+  const marker = new mapboxgl.Marker()
+    .setLngLat(await coord)
+    .addTo(map);
+
+  map.on('style.load', () => {
+    const waiting = () => {
+      if (!map.isStyleLoaded()) {
+        setTimeout(waiting, 200);
+      } else {
+        const label = [
+          'country-label',
+          'state-label',
+          'settlement-major-label',
+          'settlement-minor-label',
+          'settlement-subdivision-label'
+        ];
+        for (let i = 0; i < label.length; i++) {
+          map.setLayoutProperty(label[i], 'text-field', [
+            'get',
+            `name_${language}`]);
+        }
+      }
+    };
+    waiting();
+  });
+  return map;
+}
+getMap(getCoord(), lang);
