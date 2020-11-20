@@ -16,7 +16,6 @@ const engText = ['Search', 'Feels like', 'Wind speed', 'kph', 'Humidity', 'Latit
 const selectLang = document.querySelector('.selectLang');
 const selectMetr = document.querySelector('.selectMetr');
 const searchInp = document.querySelector('.controlsSearchInp');
-// const searchForm = document.querySelector('.controlsSearch');
 const searchBtn = document.querySelector('.controlsSearchBtn');
 let lang = localStorage.getItem('lang');
 let metr = localStorage.getItem('metr');
@@ -39,9 +38,11 @@ searchBtn.addEventListener('click', (event) => {
   if (selectLang.value === 'ru') {
     getApis(cityRequest, rusText, rusWeekDays);
     getMap(getCoord(cityRequest), lang);
+    searchBtn.blur();
   } else if (selectLang.value === 'en') {
     getApis(cityRequest, engText, engWeekDays);
     getMap(getCoord(cityRequest), lang);
+    searchBtn.blur();
   }
   searchInp.value = '';
 });
@@ -52,9 +53,11 @@ selectLang.addEventListener('change', () => {
   if (selectLang.value === 'ru') {
     getApis(cityRequest, rusText, rusWeekDays);
     getMap(getCoord(cityRequest), lang);
+    selectLang.blur();
   } else if (selectLang.value === 'en') {
     getApis(cityRequest, engText, engWeekDays);
     getMap(getCoord(cityRequest), lang);
+    selectLang.blur();
   }
 }, false);
 
@@ -63,8 +66,10 @@ selectMetr.addEventListener('change', () => {
   metr = selectMetr.value;
   if (selectLang.value === 'ru') {
     getApis(cityRequest, rusText, rusWeekDays);
+    selectMetr.blur();
   } else if (selectLang.value === 'en') {
     getApis(cityRequest, engText, engWeekDays);
+    selectMetr.blur();
   }
 });
 
@@ -94,6 +99,7 @@ getAndChangeFon();
 const controlsBackgroundBtn = document.querySelector('.controlsBackgroundBtn');
 controlsBackgroundBtn.addEventListener('click', () => {
   getAndChangeFon();
+  controlsBackgroundBtn.blur();
 });
 
 async function getApis(searchOptions, text, WeekDays) {
@@ -103,7 +109,7 @@ async function getApis(searchOptions, text, WeekDays) {
   const weatherResponce = await fetch(urlWeather);
   const weatherData = await weatherResponce.json();
 
-  const isDay = (new Date()).getDay();
+  let isDay = (new Date()).getDay();
 
   const cityName = document.querySelector('.cityName');
   const countryName = document.querySelector('.countryName');
@@ -155,11 +161,22 @@ async function getApis(searchOptions, text, WeekDays) {
   nextWeekDay.innerHTML = WeekDays[(isDay)];
   nextDayIcon.src = `./icons/${weatherData.forecast.forecastday[0].day.condition.icon.slice(34)}`;
 
-  secondWeekDay.innerHTML = WeekDays[(isDay + 1)];
-  secondDayIcon.src = `./icons/${weatherData.forecast.forecastday[1].day.condition.icon.slice(34)}`;
-
-  thirdWeekDay.innerHTML = WeekDays[(isDay + 2)];
-  thirdDayIcon.src = `./icons/${weatherData.forecast.forecastday[2].day.condition.icon.slice(34)}`;
+  if (isDay + 1 > 6) {
+    isDay -= 7;
+    secondWeekDay.innerHTML = WeekDays[(isDay + 1)];
+    secondDayIcon.src = `./icons/${weatherData.forecast.forecastday[1].day.condition.icon.slice(34)}`;
+  } else {
+    secondWeekDay.innerHTML = WeekDays[(isDay + 1)];
+    secondDayIcon.src = `./icons/${weatherData.forecast.forecastday[1].day.condition.icon.slice(34)}`;
+  }
+  if (isDay + 2 > 6) {
+    isDay -= 7;
+    thirdWeekDay.innerHTML = WeekDays[(isDay + 2)];
+    thirdDayIcon.src = `./icons/${weatherData.forecast.forecastday[2].day.condition.icon.slice(34)}`;
+  } else {
+    thirdWeekDay.innerHTML = WeekDays[(isDay + 2)];
+    thirdDayIcon.src = `./icons/${weatherData.forecast.forecastday[2].day.condition.icon.slice(34)}`;
+  }
 
   const latCoord = document.querySelector('.lat');
   const lngCoord = document.querySelector('.lng');
@@ -168,6 +185,7 @@ async function getApis(searchOptions, text, WeekDays) {
   const longitude = getCoordinates[1];
   latCoord.innerHTML = `${text[5]}: ${latitude.toFixed(2)}&deg`;
   lngCoord.innerHTML = `${text[6]}: ${longitude.toFixed(2)}&deg`;
+  searchBtn.blur();
 }
 async function checkLang(city) {
   if (lang === 'ru') {
