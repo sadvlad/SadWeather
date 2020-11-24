@@ -1,6 +1,7 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 const ESLintPlugin = require('eslint-webpack-plugin');
 module.exports = {
   entry: ['babel-polyfill', './src/index.js'],
@@ -42,6 +43,11 @@ module.exports = {
     }),
     new ESLintPlugin({
       extensions: ['js']
-    })
-  ]
+    }),
+    new CopyWebpackPlugin({
+      patterns: [
+          { from: './src/icons', to: './icons'}
+      ]
+  }),
+],
 };
