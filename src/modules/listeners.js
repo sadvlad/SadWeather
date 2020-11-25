@@ -17,7 +17,9 @@ export function addListeners() {
   searchBtn.addEventListener('click', (event) => {
     event.preventDefault();
     if (searchInp.value.length > 2) {
-      cityRequest = searchInp.value;
+      localStorage.setItem('city', searchInp.value);
+      getAndChangeFon();
+      cityRequest = localStorage.getItem('city');
       if (selectLang.value === 'ru') {
         initWeather(cityRequest, rusText, rusWeekDays);
         getMap(getCoord(cityRequest), lang);
@@ -47,6 +49,7 @@ export function addListeners() {
   selectLang.addEventListener('change', () => {
     localStorage.setItem('lang', `${selectLang.value}`);
     lang = selectLang.value;
+    cityRequest = localStorage.getItem('city');
     if (selectLang.value === 'ru') {
       initWeather(cityRequest, rusText, rusWeekDays);
       getMap(getCoord(cityRequest), lang);
@@ -61,6 +64,7 @@ export function addListeners() {
   selectMetr.addEventListener('change', () => {
     localStorage.setItem('metr', `${selectMetr.value}`);
     metr = selectMetr.value;
+    cityRequest = localStorage.getItem('city');
     if (selectLang.value === 'ru') {
       initWeather(cityRequest, rusText, rusWeekDays);
       selectMetr.blur();
@@ -68,7 +72,7 @@ export function addListeners() {
       initWeather(cityRequest, engText, engWeekDays);
       selectMetr.blur();
     }
-  });
+  }, false);
   const controlsBackgroundBtn = document.querySelector('.controlsBackgroundBtn');
   controlsBackgroundBtn.addEventListener('click', () => {
     getAndChangeFon();

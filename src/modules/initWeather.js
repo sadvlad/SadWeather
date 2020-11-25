@@ -10,22 +10,32 @@ export const searchInp = document.querySelector('.controlsSearchInp');
 export const searchBtn = document.querySelector('.controlsSearchBtn');
 
 export async function checkLang(city) {
+  localStorage.setItem('city', await city);
   if (lang === 'ru') {
     initWeather(await city, rusText, rusWeekDays, 'ru');
-  } else {
+  } else if (lang === 'en') {
     initWeather(await city, engText, engWeekDays, 'en');
+  } else {
+    localStorage.setItem('metr', 'c');
+    localStorage.setItem('lang', 'ru');
+    initWeather(await city, rusText, rusWeekDays, lang);
   }
 }
 
 export function checkSelectors() {
-  if (lang === 'ru') {
+  if (lang || metr) {
+    if (lang === 'ru') {
+      selectLang.selectedIndex = 1;
+    } else if (lang === 'en') {
+      selectLang.selectedIndex = 0;
+    }
+    if (metr === 'f') {
+      selectMetr.selectedIndex = 1;
+    } else if (metr === 'c') {
+      selectMetr.selectedIndex = 0;
+    }
+  } else {
     selectLang.selectedIndex = 1;
-  } else if (lang === 'en') {
-    selectLang.selectedIndex = 0;
-  }
-  if (metr === 'f') {
-    selectMetr.selectedIndex = 1;
-  } else if (metr === 'c') {
     selectMetr.selectedIndex = 0;
   }
 }
@@ -74,18 +84,23 @@ export async function initWeather(searchOptions, text, WeekDays) {
   const thirdDayTemp = document.querySelector('.thirdDayTemp');
 
   controlsSearchBtn.value = `${text[0]}`;
-
   cityName.innerHTML = `${weatherData.location.name}`;
   countryName.innerHTML = `${weatherData.location.country}`;
 
   let timeZoneStr = await getTimeZone(searchOptions);
-
+  let langForDate = localStorage.getItem('lang');
   searchBtn.addEventListener('click', (event) => {
     event.preventDefault();
     clearInterval(showDate);
   });
+  selectLang.addEventListener('change', () => {
+    clearInterval(showDate);
+  });
+  selectMetr.addEventListener('change', () => {
+    clearInterval(showDate);
+  });
   let showDate = setInterval(() => {
-    dateNow.innerHTML = `${getDate(lang, timeZoneStr)}`;
+    dateNow.innerHTML = `${getDate(langForDate, timeZoneStr)}`;
   }, 1000);
 
   weatherNowIcon.src = `./icons/${weatherData.current.condition.icon.slice(34)}`;
@@ -94,18 +109,18 @@ export async function initWeather(searchOptions, text, WeekDays) {
   windSpeed.innerHTML = `${text[2]}: ${weatherData.current.wind_kph} ${text[3]}`;
   humidity.innerHTML = `${text[4]}: ${weatherData.current.humidity} %`;
 
-  if (metr === 'c') {
-    tempNow.innerHTML = `${weatherData.current.temp_c}&deg C`;
-    feelsLike.innerHTML = `${text[1]}: ${weatherData.current.feelslike_c}&deg C`;
-    nextDayTemp.innerHTML = `${weatherData.forecast.forecastday[0].day.avgtemp_c}&deg C`;
-    secondDayTemp.innerHTML = `${weatherData.forecast.forecastday[1].day.avgtemp_c}&deg C`;
-    thirdDayTemp.innerHTML = `${weatherData.forecast.forecastday[2].day.avgtemp_c}&deg C`;
-  } else {
+  if (metr === 'f') {
     tempNow.innerHTML = `${weatherData.current.temp_f}&deg F`;
     feelsLike.innerHTML = `${text[1]}: ${weatherData.current.feelslike_f}&deg F`;
     nextDayTemp.innerHTML = `${weatherData.forecast.forecastday[0].day.avgtemp_f}&deg F`;
     secondDayTemp.innerHTML = `${weatherData.forecast.forecastday[1].day.avgtemp_f}&deg F`;
     thirdDayTemp.innerHTML = `${weatherData.forecast.forecastday[2].day.avgtemp_f}&deg F`;
+  } else {
+    tempNow.innerHTML = `${weatherData.current.temp_c}&deg C`;
+    feelsLike.innerHTML = `${text[1]}: ${weatherData.current.feelslike_c}&deg C`;
+    nextDayTemp.innerHTML = `${weatherData.forecast.forecastday[0].day.avgtemp_c}&deg C`;
+    secondDayTemp.innerHTML = `${weatherData.forecast.forecastday[1].day.avgtemp_c}&deg C`;
+    thirdDayTemp.innerHTML = `${weatherData.forecast.forecastday[2].day.avgtemp_c}&deg C`;
   }
   nextWeekDay.innerHTML = WeekDays[(isDay)];
   nextDayIcon.src = `./icons/${weatherData.forecast.forecastday[0].day.condition.icon.slice(34)}`;

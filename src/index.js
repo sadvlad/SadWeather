@@ -9,10 +9,10 @@ import { getAndChangeFon } from './modules/background.js';
 
 checkSelectors();
 
-addListeners();
+checkLang(getLocation());
 
 getAndChangeFon();
 
-checkLang(getLocation());
+addListeners();
 
 getMap(getCoord(cityRequest), lang);
